@@ -8,6 +8,7 @@ import calculator_pb2_grpc
 
 # import the original calculator.py
 import calculator 
+import logging
 
 # create a class to define the server functions, derived from 
 # calculator_pb_grpc.CalculatorServicer
@@ -20,6 +21,7 @@ class CalculatorServicer(calculator_pb2_grpc.CalculatorServicer):
     # calculator_pb2.Number 
     def SquareRoot(self, request, context):
         response = calculator_pb2.Number()
+        logging.info(f"Calculating the square root of {request}")
         response.value = calculator.square_root(request.value)
         return response 
     
@@ -30,6 +32,9 @@ server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 # use the generated function `add_CalculatorServicer_to_server`
 # to add the defined class to the server 
 calculator_pb2_grpc.add_CalculatorServicer_to_server(CalculatorServicer(), server)
+
+# configuration of logging level
+logging.basicConfig(level=logging.INFO)
 
 # listen on port 50051
 print('Starting server. Listening on port 50051.')
